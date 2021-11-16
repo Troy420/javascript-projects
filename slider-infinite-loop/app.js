@@ -3,7 +3,10 @@ const slideContainer = document.querySelector(".slider-container");
 const slider = document.querySelector(".slider");
 const prevBtn = document.querySelector("#prev-btn");
 const nextBtn = document.querySelector("#next-btn");
-let slides = document.querySelectorAll(".slide");
+let slides = [...document.querySelectorAll(".slide")];
+
+// Another way of getting array of nodes
+// let slides = Array.from(slider.children);
 // console.log(slides); //4 nodeList
 
 const intervalTime = 3000;
@@ -37,9 +40,9 @@ slider.style.transform = `translateX(${-slideWidth * index}px)`;
 /** ------------------------------------ FUNCTIONS */
 
 // The ID value returned by setInterval() is used as the parameter for the clearInterval() method.
-function startSlide() {
-  slideId = setInterval(nextSlide, intervalTime);
-}
+// function startSlide() {
+//   slideId = setInterval(nextSlide, intervalTime);
+// }
 
 function getTheNewClonedNodeLists() {
   return document.querySelectorAll(".slide");
@@ -89,4 +92,4 @@ slideContainer.addEventListener("mouseenter", function () {
 slideContainer.addEventListener("mouseleave", startSlide);
 
 // invoke startSlide function
-startSlide();
+// startSlide();

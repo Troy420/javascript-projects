@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Carousel</title>
+
+    <!-- Style -->
+    <link rel="stylesheet" href="src/styles.css" />
+  </head>
+  <body>
+    <!-- Main Carousel -->
+    <div class="carousel">
+      <!-- Left Arrow Button -->
+      <button class="carousel__button carousel__button--left">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <!-- Carousel Container -->
+      <div class="carousel__track-container">
+        <!-- Carousel track <ul> -->
+        <ul class="carousel__track">
+          <!-- Origin Carousel List <li> -->
+          <li class="carousel__slide current-slide">
+            <img class="carousel__image" src="src/img/1.jpg" alt="" />
+          </li>
+          <li class="carousel__slide">
+            <img class="carousel__image" src="src/img/2.jpg" alt="" />
+          </li>
+          <li class="carousel__slide">
+            <img class="carousel__image" src="src/img/3.jpg" alt="" />
+          </li>
+          <li class="carousel__slide">
+            <img class="carousel__image" src="src/img/4.jpg" alt="" />
+          </li>
+          <!-- End of Origin Carousel List <li> -->
+        </ul>
+      </div>
+      <!-- Right Arrow Button -->
+      <button class="carousel__button carousel__button--right">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+
+      <!-- Dotted Navigation -->
+      <div class="carousel__nav">
+        <!-- Dotted Buttons -->
+        <button class="carousel__indicator current-slide"></button>
+        <button class="carousel__indicator"></button>
+        <button class="carousel__indicator"></button>
+        <button class="carousel__indicator"></button>
+      </div>
+    </div>
+    <!-- Script -->
+    <script src="src/index.js"></script>
+    <script
+      src="https://kit.fontawesome.com/10c3c5053e.js"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
