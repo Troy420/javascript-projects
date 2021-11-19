@@ -9,6 +9,7 @@ let slides = [...track.children];
 const nextBtn = document.querySelector(".carousel__button--right");
 const prevBtn = document.querySelector(".carousel__button--left");
 const dottedNav = document.querySelector(".carousel__nav");
+let currentSlide = document.querySelector("current-slide");
 
 // Another way of making Array of Nodes
 let dots = Array.from(dottedNav.children);
@@ -24,9 +25,7 @@ let cloneArrayForNext = [];
 let cloneArrayForBefore = [];
 slides.forEach(function (slide) {
   cloneArrayForNext.push(slide.cloneNode(true));
-  cloneArrayForNext[0].classList.remove("current-slide");
   cloneArrayForBefore.push(slide.cloneNode(true));
-  // cloneArrayForBefore[0].classList.remove("current-slide");
 });
 
 // Cloning the >>> slide
@@ -93,6 +92,9 @@ setSlidePosition(secondLastSlideClone, slides.length - 6);
 setSlidePosition(thirdLastSlideClone, slides.length - 7);
 setSlidePosition(fourthLastSlideClone, slides.length - 8);
 
+// Set current slide
+slides[0].classList.add("current-slide");
+
 /** -------------------------------------------------- FUNCTIONS */
 // Setting the position for each of the slides
 function setSlidePosition(slide, index) {
@@ -102,7 +104,6 @@ slides.forEach(setSlidePosition);
 
 function moveSlide(currentSlide, targetSlide) {
   track.style.transition = "transform 500ms";
-  // track.style.transform = `translateX(-${slideWidth * index}px)`;
   currentSlide.classList.remove("current-slide");
   targetSlide.classList.add("current-slide");
 }
@@ -124,20 +125,23 @@ function getTheNewClonedDotLists() {
 /** ------------------------------------------------- EVENT LISTENERS */
 // When I click right, move slides to the right
 nextBtn.addEventListener("click", function () {
-  index++;
-  console.log(index);
-  slides[0].classList.remove("current-slide");
-  console.log(slides);
   // Update the Slides Array
   slides = getTheNewClonedSlideLists();
   dots = getTheNewClonedDotLists();
 
-  const currentSlide = track.querySelector(".current-slide");
+  currentSlide = track.querySelector(".current-slide");
   let targetSlide = currentSlide.nextElementSibling;
 
-  if (targetSlide.id === firstSlideClone.id) {
-    targetSlide = track.firstElementChild.nextElementSibling;
+  // index is 0
+  index++;
+
+  if (currentSlide.id === thirdSlideClone.id) {
+    targetSlide = firstSlideClone.previousElementSibling;
   }
+
+  console.dir("index: " + index);
+  console.dir("currentSlide: " + currentSlide.id);
+  console.log("targetSlide: " + targetSlide.id);
 
   let currentDot = dottedNav.querySelector(".current-slide");
   let nextDot = currentDot.nextElementSibling;
@@ -153,21 +157,23 @@ nextBtn.addEventListener("click", function () {
 
 // When I click left, move slides to the left
 prevBtn.addEventListener("click", function () {
-  // Update the Slides Array
+  index++;
+  if (index < 0) {
+    index *= -1;
+  }
+  console.log(index);
+
+  // slides[0].classList.remove("current-slide");
+  // s.previousElementSibling.classList.remove("current-slide");
   slides = getTheNewClonedSlideLists();
   // console.log(slides);
-  index = 2;
-  // console.log(index);
-  const currentSlide = slides[2];
-  // currentSlide.classList.add("current-slide");
-  // console.log(currentSlide);
-  const targetSlide = currentSlide.previousElementSibling;
-  index--;
-  // if (index < 0) {
-  //   index = index * -3; // (3)
+
+  const currentSlide = track.querySelector(".current-slide");
+  let targetSlide = currentSlide.nextElementSibling;
+
+  // if (targetSlide.id === "something") {
+  //   targetSlide = track.firstElementChild;
   // }
-  // console.log(index);
-  // console.log(slides);
 
   // dots = getTheNewClonedDotLists();
   // console.log(slides);
@@ -176,6 +182,7 @@ prevBtn.addEventListener("click", function () {
   // const currentDot = dottedNav.querySelector(".current-slide");
   // const prevDot = currentDot.previousElementSibling;
   // const amountToMove = prevSlide.style.left;
+  console.log(currentSlide.id + " " + index);
 
   track.style.transform = `translateX(${slideWidth * index}px)`;
   moveSlide(currentSlide, targetSlide);
@@ -212,32 +219,36 @@ dottedNav.addEventListener("click", function (e) {
 });
 
 track.addEventListener("transitionend", function () {
-  slides = getTheNewClonedSlideLists();
   // dots = getTheNewClonedDotLists();
-  // console.log(slides); // now it returns 12 nodeList
+  // console.log(currentSlide.id); // now it returns 12 nodeList
   // console.log(dots);
-
   // console.log(index);
   // console.log(slides.length);
-  // console.log(slides[index].attributes[1]);
+  // console.log(slides[index].id);
 
-  if (slides[index].id === "stop-trans") {
+  if (currentSlide.id === firstSlideClone.id) {
     track.style.transition = "none";
+    // alert(track.style.transition);
     if (index >= 4) {
       index = 1;
     }
     track.style.transform = `translateX(-${slideWidth * index}px)`;
   }
+
+  // 0, 1, 2, 3
+  // if (slides[index].id === "something") {
+  //   // console.log("trans end at " + thirdLastSlideClone.id);
+  //   track.style.transition = "none";
+  //   // console.log();
+  //   if (index >= 4) {
+  //     console.log("index is now 1");
+  //     index = 1;
+  //   }
+  //   track.style.transform = `translateX(${slideWidth * index}px})`;
+  // }
   // if (dots[index].id === firstDotClone.id) {
   //   if (index >= dots.length - 2) {
   //     index = 1;
   //   }
-  // }
-  // if (slides[index].id === lastSlideClone.id) {
-  //   track.style.transition = "none";
-  //   // why - 2? because the new nodeList have 6 nodes, the last node is a clone of the first node. this means that the last node is at the 4th index
-  //   index = slides.length;
-  //   track.style.transform = `translateX(${slideWidth * index}px})`;
-  //   // moveSlide();
   // }
 });

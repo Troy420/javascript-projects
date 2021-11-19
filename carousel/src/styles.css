@@ -132,6 +132,7 @@ Carousel
   position: relative;
   height: 100%;
   width: 100%;
+  /* transition: all 500ms; */
 }
 .carousel__slide {
   position: absolute;
@@ -139,6 +140,11 @@ Carousel
   bottom: 0;
   width: 33%;
   padding: 10px;
+}
+.carousel__slide h4 {
+  position: absolute;
+  top: 50%;
+  color: var(--clr-secondary);
 }
 .carousel__image {
   width: 100%;
