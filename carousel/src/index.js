@@ -139,10 +139,6 @@ nextBtn.addEventListener("click", function () {
     targetSlide = firstSlideClone.previousElementSibling;
   }
 
-  console.dir("index: " + index);
-  console.dir("currentSlide: " + currentSlide.id);
-  console.log("targetSlide: " + targetSlide.id);
-
   let currentDot = dottedNav.querySelector(".current-slide");
   let nextDot = currentDot.nextElementSibling;
   if (nextDot.id === firstDotClone.id) {
@@ -157,23 +153,20 @@ nextBtn.addEventListener("click", function () {
 
 // When I click left, move slides to the left
 prevBtn.addEventListener("click", function () {
-  index++;
-  if (index < 0) {
-    index *= -1;
-  }
-  console.log(index);
-
-  // slides[0].classList.remove("current-slide");
-  // s.previousElementSibling.classList.remove("current-slide");
   slides = getTheNewClonedSlideLists();
-  // console.log(slides);
+  currentSlide = track.querySelector(".current-slide");
+  let targetSlide = currentSlide.previousElementSibling;
 
-  const currentSlide = track.querySelector(".current-slide");
-  let targetSlide = currentSlide.nextElementSibling;
+  // Index is 0
+  index--;
 
-  // if (targetSlide.id === "something") {
-  //   targetSlide = track.firstElementChild;
-  // }
+  if (currentSlide.id === thirdLastSlideClone.id) {
+    targetSlide = lastSlideClone.nextElementSibling;
+  }
+
+  console.dir("index: " + index);
+  console.dir("currentSlide: " + currentSlide.id);
+  console.log("targetSlide: " + targetSlide.id);
 
   // dots = getTheNewClonedDotLists();
   // console.log(slides);
@@ -182,9 +175,8 @@ prevBtn.addEventListener("click", function () {
   // const currentDot = dottedNav.querySelector(".current-slide");
   // const prevDot = currentDot.previousElementSibling;
   // const amountToMove = prevSlide.style.left;
-  console.log(currentSlide.id + " " + index);
 
-  track.style.transform = `translateX(${slideWidth * index}px)`;
+  track.style.transform = `translateX(${slideWidth * Math.abs(index)}px)`;
   moveSlide(currentSlide, targetSlide);
   // updateDots(currentDot, prevDot);
 });
@@ -235,17 +227,14 @@ track.addEventListener("transitionend", function () {
     track.style.transform = `translateX(-${slideWidth * index}px)`;
   }
 
-  // 0, 1, 2, 3
-  // if (slides[index].id === "something") {
-  //   // console.log("trans end at " + thirdLastSlideClone.id);
-  //   track.style.transition = "none";
-  //   // console.log();
-  //   if (index >= 4) {
-  //     console.log("index is now 1");
-  //     index = 1;
-  //   }
-  //   track.style.transform = `translateX(${slideWidth * index}px})`;
-  // }
+  if (currentSlide.id === thirdLastSlideClone.id) {
+    track.style.transition = "none";
+    if (index <= -4) {
+      index = 0;
+    }
+    track.style.transform = `translateX(${slideWidth * 0}px)`;
+  }
+
   // if (dots[index].id === firstDotClone.id) {
   //   if (index >= dots.length - 2) {
   //     index = 1;
