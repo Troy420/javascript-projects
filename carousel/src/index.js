@@ -20,6 +20,7 @@ let index = 0;
 // Getting the width of the slide
 const slideWidth = slides[0].getBoundingClientRect().width;
 // console.log(slideWidth);
+
 /** -------------------------------------------------- CLONING */
 let cloneArrayForNext = [];
 let cloneArrayForBefore = [];
@@ -149,11 +150,17 @@ nextBtn.addEventListener("click", function () {
   track.style.transform = `translateX(-${slideWidth * index}px)`;
   moveSlide(currentSlide, targetSlide);
   updateDots(currentDot, nextDot);
+
+  // console logs
+  console.dir("index: " + index);
+  console.dir("currentSlide: " + currentSlide.id);
+  console.log("targetSlide: " + targetSlide.id);
 });
 
 // When I click left, move slides to the left
 prevBtn.addEventListener("click", function () {
   slides = getTheNewClonedSlideLists();
+  // dots = getTheNewClonedDotLists();
   currentSlide = track.querySelector(".current-slide");
   let targetSlide = currentSlide.previousElementSibling;
 
@@ -164,21 +171,23 @@ prevBtn.addEventListener("click", function () {
     targetSlide = lastSlideClone.nextElementSibling;
   }
 
+  let currentDot = dottedNav.querySelector(".current-slide");
+  let prevDot = currentDot.previousElementSibling;
+  if (prevDot.id === lastDotClone.id) {
+    prevDot = dottedNav.lastElementChild.previousElementSibling;
+  }
+  console.log(dottedNav);
+  // THERE IS A FLAW HERE.
+  track.style.transform = `translateX(${slideWidth * Math.abs(index)}px)`;
+
+  moveSlide(currentSlide, targetSlide);
+  updateDots(currentDot, prevDot);
+
+  // console logs
   console.dir("index: " + index);
   console.dir("currentSlide: " + currentSlide.id);
   console.log("targetSlide: " + targetSlide.id);
-
-  // dots = getTheNewClonedDotLists();
-  // console.log(slides);
-
-  // const currentSlide = track.querySelector(".current-slide");
-  // const currentDot = dottedNav.querySelector(".current-slide");
-  // const prevDot = currentDot.previousElementSibling;
-  // const amountToMove = prevSlide.style.left;
-
-  track.style.transform = `translateX(${slideWidth * Math.abs(index)}px)`;
-  moveSlide(currentSlide, targetSlide);
-  // updateDots(currentDot, prevDot);
+  console.log(track.style.transform);
 });
 
 // When I click the nav indicators, move to that slides

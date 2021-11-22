@@ -126,7 +126,7 @@ Carousel
   height: 100%;
   position: relative;
   display: flex;
-  /* overflow: hidden; */
+  overflow: hidden;
 }
 .carousel__track {
   position: relative;
@@ -144,7 +144,7 @@ Carousel
 .carousel__slide h4 {
   position: absolute;
   top: 50%;
-  color: var(--clr-secondary);
+  color: var(--clr-white);
 }
 .carousel__image {
   width: 100%;
