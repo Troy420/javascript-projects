@@ -88,12 +88,6 @@ function Carousel(options) {
     let dotContainer = document.createElement("ul");
     dotContainer.classList.add(crslDotsClass);
 
-    for (let i = 0; i < count; i++) {
-      let dotElement = document.createElement("li");
-      dotElement.setAttribute("data-position", i);
-      dotContainer.appendChild(dotElement);
-    }
-
     /**
      * Moves the carousel to the desired slide on a navigation dot click.
      *
@@ -107,6 +101,12 @@ function Carousel(options) {
         // console.log(e.target);
       }
     });
+
+    for (let i = 0; i < count; i++) {
+      let dotElement = document.createElement("li");
+      dotElement.setAttribute("data-position", i);
+      dotContainer.appendChild(dotElement);
+    }
 
     element.appendChild(dotContainer);
     currentDot();
@@ -152,8 +152,69 @@ function Carousel(options) {
     }
   }
 
+  /**
+   * Move the carousel forward.
+   *
+   * @public
+   */
   function showNext() {
-    console.log("show next");
+    if (options.infinite) {
+      showNextInfinite();
+    } else {
+      showNextLinear();
+    }
+
+    resetInterval();
+  }
+
+  /**
+   * Helper function to show the next slide for LINEAR carousel.
+   * If on the last slide - stop the play and do nothing else.
+   */
+  function showNextLinear() {
+    if (currentIndex === count - 1) {
+      stop();
+      return;
+    }
+
+    animateNext(
+      element.querySelectorAll("." + crslClass + " > ul li")[currentIndex]
+    );
+
+    adjustCurrent(1);
+  }
+
+  /**
+   * Adjust _current_ and highlight the respective dot.
+   *
+   * @param {number} val - defines which way current should be corrected.
+   */
+  function adjustCurrent(val) {
+    currentIndex += val;
+
+    switch (currentIndex) {
+      case -1:
+        currentIndex = count - 1;
+        break;
+      case count:
+        currentIndex = 0;
+        break;
+      default:
+        currentIndex = currentIndex;
+    }
+
+    if (options.dots) {
+      currentDot();
+    }
+  }
+
+  /**
+   * Animate the carousel to go forward 1 slide.
+   *
+   * @param {object} item - The element to move into view.
+   */
+  function animateNext(item) {
+    item.style.marginLeft = -element.offsetWidth + "px";
   }
 
   function showPrev() {
