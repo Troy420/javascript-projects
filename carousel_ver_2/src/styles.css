@@ -36,7 +36,7 @@ body {
 }
 .js-Carousel > ul li {
   display: inline-flex;
-  transition: margin-left 5s linear;
+  transition: margin-left 0.3s ease;
   /* border: 5px solid yellow; */
 }
 .js-Carousel > ul li img {

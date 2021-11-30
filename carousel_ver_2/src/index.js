@@ -67,7 +67,7 @@ function Carousel(options) {
         return moveItem(count - 1, -element.offsetTop + "px", "afterbegin");
       },
       initial: function () {
-        var initial = 0 || options.initial >= count ? count : options.initial;
+        let initial = 0 || options.initial >= count ? count : options.initial;
         return show(initial);
       },
     };
@@ -258,6 +258,7 @@ function Carousel(options) {
     animatePrev(
       element.querySelectorAll("." + crslClass + " > ul li")[currentIndex - 1]
     );
+    console.log(currentIndex);
 
     adjustCurrentIndexTo(-1);
   }
@@ -280,7 +281,7 @@ function Carousel(options) {
    */
   function adjustCurrentIndexTo(val) {
     currentIndex += val; // currentIndex = currentIndex + val (val default value is 1)
-    console.log(currentIndex); // current index is x (starts from 0) than x=0+1 ,, x=1+1,, x=2+1
+    // current index is x (starts from 0) than x=0+1 ,, x=1+1,, x=2+1
 
     switch (currentIndex) {
       case -1:
