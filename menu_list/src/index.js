@@ -140,6 +140,7 @@ function displayMenuBtns() {
 
   filterBtns.forEach(function (btn) {
     btn.addEventListener("click", function (e) {
+      // dataset.category is to take the data-category attribute value
       const category = e.target.dataset.category;
       const menuCategory = menu.filter(function (menuItem) {
         if (menuItem.category === category) {
