@@ -9,6 +9,11 @@
     <section>
       <div class="js-Carousel" id="carousel">
         <ul>
+          <li><img src="./images/1.jpg" alt="" /></li>
+          <li><img src="./images/2.jpg" alt="" /></li>
+          <li><img src="./images/3.jpg" alt="" /></li>
+          <li><img src="./images/4.jpg" alt="" /></li>
+          <li><img src="./images/5.jpg" alt="" /></li>
           <li><img src="./images/6.jpg" alt="" /></li>
           <li><img src="./images/7.jpg" alt="" /></li>
           <li><img src="./images/8.jpg" alt="" /></li>
@@ -29,11 +34,13 @@
         dots: true, // show navigation dots
         arrows: true, // show navigation arrows
         buttons: true, // hide play/stop buttons
+        initial: 0,
         // btnPlayText: "Start", // Play button text
-        // btnStopText: "Pause", // STOP button text
+        btnStopText: "Pause", // STOP button text
       });
 
       carousel.render;
+      // carousel._moveItem();
     </script>
   </body>
 </html>

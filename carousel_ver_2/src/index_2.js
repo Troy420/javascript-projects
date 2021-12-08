@@ -78,7 +78,7 @@ class Carousel {
         // when infinite is turn on the lastelementchild will be moved to the first element with and offsetwidth of -600
         return this._moveItem(
           this.count - 1,
-          -this.element.offsetWidth + "px",
+          `-${this.element.offsetWidth}px`,
           "afterbegin"
         );
       },
@@ -159,12 +159,10 @@ class Carousel {
    */
   _show(initial) {
     let index = this.currentIndex - initial;
-    console.log("initial index", index);
-    // currentIndex = 0 - 2 ==> -2
     if (index < 0) {
-      this._moveByIndex(-index, this._showNext());
+      this._moveByIndex(-index, this._showNext);
     } else {
-      this._moveByIndex(index, this._showPrev());
+      this._moveByIndex(index, this._showPrev);
     }
   }
 
@@ -177,7 +175,7 @@ class Carousel {
   _moveByIndex(idx, direction) {
     // console.log("idx", idx);
     for (let i = 0; i < idx; i++) {
-      () => direction;
+      direction.call(this);
     }
   }
 
@@ -197,25 +195,6 @@ class Carousel {
   }
 
   /**
-   * Helper function to show the next slide for LINEAR carousel.
-   * If on the last slide - stop the play and do nothing else.
-   */
-  _showNextLinear() {
-    if (this.currentIndex === this.count - 1) {
-      this._stop();
-      return;
-    }
-
-    this._animateNext(
-      this.element.querySelectorAll("." + cssClasses.crslClass + " > ul li")[
-        this.currentIndex
-      ]
-    );
-
-    this._adjustCurrentIndexTo(1);
-  }
-
-  /**
    * Helper for moving items - last to be first or first to be the last. Needed
    * for infinite rotation of the carousel.
    *
@@ -226,13 +205,6 @@ class Carousel {
    *        'afterBegin' or 'beforeEnd'.
    */
   _moveItem(i, marginLeft, position) {
-    /*CASE:
-            moveItem({
-              index: 0,
-              marginLeft: "",
-              position: "beforeEnd")
-            }
-          */
     // choose the item to move, in this case its the index 0
     let itemToMove = this.element.querySelectorAll(
       "." + cssClasses.crslClass + " > ul li"
@@ -267,6 +239,25 @@ class Carousel {
   }
 
   /**
+   * Helper function to show the next slide for LINEAR carousel.
+   * If on the last slide - stop the play and do nothing else.
+   */
+  _showNextLinear() {
+    if (this.currentIndex === this.count - 1) {
+      this._stop();
+      return;
+    }
+
+    this._animateNext(
+      this.element.querySelectorAll("." + cssClasses.crslClass + " > ul li")[
+        this.currentIndex
+      ]
+    );
+
+    this._adjustCurrentIndexTo(1);
+  }
+
+  /**
    * Helper function to show the next slide for INFINITE carousel.
    * Do the sliding, move the second item to the very end.
    */
@@ -274,7 +265,11 @@ class Carousel {
     this._animateNext(
       this.element.querySelectorAll("." + cssClasses.crslClass + " > ul li")[1]
     );
-    this._moveItem(0, "", "beforeEnd"); // i = 0, marginLeft = "", position = before the end
+
+    console.log(
+      this.element.querySelectorAll("." + cssClasses.crslClass + " > ul li")[1]
+    );
+    this._moveItem(0, "", "beforeend"); // i = 0, marginLeft = "", position = before the end
 
     this._adjustCurrentIndexTo(1);
   }
@@ -307,7 +302,7 @@ class Carousel {
     );
     this._moveItem(
       this.count - 1,
-      -this.element.offsetWidth + "px",
+      `-${this.element.offsetWidth}px`,
       "afterBegin"
     );
 
@@ -321,14 +316,13 @@ class Carousel {
    */
   _adjustCurrentIndexTo(val) {
     this.currentIndex += val; // currentIndex = currentIndex + val (val default value is 1)
-    console.log("current index: ", this.currentIndex);
 
     // current index is x (starts from 0) than x=0+1 ,, x=1+1,, x=2+1
     switch (this.currentIndex) {
       case -1:
         this.currentIndex = this.count - 1;
         break;
-      case this.count: // atm the count is 5
+      case this.count:
         this.currentIndex = 0;
         break;
       default:
@@ -346,8 +340,9 @@ class Carousel {
    * @param {object} item - The element to move into view.
    */
   _animateNext(item) {
-    item.style.marginLeft = -this.element.offsetWidth + "px";
-    // width is 600px so.. -600px
+    let imgWidth =
+      this.element.getElementsByTagName("img")[this.currentIndex].offsetWidth;
+    item.style.marginLeft = `-${imgWidth}px`;
   }
 
   /**
@@ -412,6 +407,7 @@ class Carousel {
     btnNextTag.classList.add(cssClasses.crslArrowNextClass);
     this.element.insertAdjacentElement("beforeend", btnNextTag);
     btnNextTag.addEventListener("click", () => {
+      console.log("current index", this.currentIndex);
       this._showNext();
     });
   }
