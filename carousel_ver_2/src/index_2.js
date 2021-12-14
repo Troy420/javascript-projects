@@ -37,6 +37,9 @@ class Carousel {
     this.btnStopText = _options.btnStopText || "Stop";
     this.arrPrevText = _options.arrPrevText || "&laquo;";
     this.arrNextText = _options.arrNextText || "&raquo;";
+
+    this.imgWidth =
+      this.element.getElementsByTagName("img")[this.currentIndex].offsetWidth;
   }
 
   /**
@@ -78,7 +81,7 @@ class Carousel {
         // when infinite is turn on the lastelementchild will be moved to the first element with and offsetwidth of -600
         return this._moveItem(
           this.count - 1,
-          `-${this.element.offsetWidth}px`,
+          `-${this.imgWidth}px`,
           "afterbegin"
         );
       },
@@ -180,6 +183,46 @@ class Carousel {
   }
 
   /**
+   * Helper for moving items - last to be first or first to be the last. Needed
+   * for infinite rotation of the carousel.
+   *
+   * @param {number} i - Position of the list item to move (either first or last).
+   * @param {number} marginLeft - Left margin to position the item off-screen
+   *        at the beginning or no margin at the end.
+   * @param {string} position - Where to insert the item. One of the following -
+   *        'afterBegin' or 'beforeEnd'.
+   */
+  _moveItem(i, marginLeft, position) {
+    // choose the item to move, depending on the arrow button we click
+    // if next is clicked i = 0 (front)
+    // if prev is clicked i = 9 (back)
+    let itemToMove = this.element.querySelectorAll(
+      "." + cssClasses.crslClass + " > ul li"
+    )[i];
+
+    // console.log("itemToMove", itemToMove);
+    console.log("i", i);
+
+    //give the margin left to "" when next is clicked, and -160 when prev is clicked
+    itemToMove.style.marginLeft = marginLeft;
+
+    console.log(marginLeft);
+
+    // remove it because its being move to the back/front
+    this.element
+      .querySelector("." + cssClasses.crslClass + " > ul")
+      .removeChild(itemToMove);
+
+    // when next is clicked position is beforeend
+    // when prev is clicked position is afterbegin
+    this.element
+      .querySelector("." + cssClasses.crslClass + " > ul")
+      .insertAdjacentHTML(position, itemToMove.outerHTML);
+
+    console.log("position", position);
+  }
+
+  /**
    * Move the carousel forward.
    *
    * @public
@@ -195,32 +238,43 @@ class Carousel {
   }
 
   /**
-   * Helper for moving items - last to be first or first to be the last. Needed
-   * for infinite rotation of the carousel.
-   *
-   * @param {number} i - Position of the list item to move (either first or last).
-   * @param {number} marginLeft - Left margin to position the item off-screen
-   *        at the beginning or no margin at the end.
-   * @param {string} position - Where to insert the item. One of the following -
-   *        'afterBegin' or 'beforeEnd'.
+   * Helper function to show the next slide for LINEAR carousel.
+   * If on the last slide - stop the play and do nothing else.
    */
-  _moveItem(i, marginLeft, position) {
-    // choose the item to move, in this case its the index 0
-    let itemToMove = this.element.querySelectorAll(
-      "." + cssClasses.crslClass + " > ul li"
-    )[i];
-    //give the margin left to none if its to the end, and -offsetWidth if its to the front
-    itemToMove.style.marginLeft = marginLeft;
+  _showNextLinear() {
+    // stop and do nothing at the end of the slides
+    if (this.currentIndex === this.count - 1) {
+      this._stop();
+      return;
+    }
 
-    // remove it because its being move to the back/front
-    this.element
-      .querySelector("." + cssClasses.crslClass + " > ul")
-      .removeChild(itemToMove);
+    // _animateNext(item)
+    this._animateNext(
+      this.element.querySelectorAll("." + cssClasses.crslClass + " > ul li")[
+        this.currentIndex
+      ]
+    );
 
-    //Element.insertAdjacentHTML("beforeEnd/afterBegin", <li></li>);
-    this.element
-      .querySelector("." + cssClasses.crslClass + " > ul")
-      .insertAdjacentHTML(position, itemToMove.outerHTML);
+    // _adjustCurrentIndexTo(val)
+    // this.currentIndex += val;
+    this._adjustCurrentIndexTo(1);
+  }
+
+  /**
+   * Helper function to show the next slide for INFINITE carousel.
+   * Do the sliding, move the second item to the very end.
+   */
+  _showNextInfinite() {
+    // _animateNext(item)
+    // why [1] because [0] is the last index moved to the front
+    this._animateNext(
+      this.element.querySelectorAll("." + cssClasses.crslClass + " > ul li")[1]
+    );
+
+    // move item with index 0 to the end and set margin left to ""
+    this._moveItem(0, "", "beforeend"); // i = 0, marginLeft = "", position = before the end
+
+    this._adjustCurrentIndexTo(1);
   }
 
   /**
@@ -239,42 +293,6 @@ class Carousel {
   }
 
   /**
-   * Helper function to show the next slide for LINEAR carousel.
-   * If on the last slide - stop the play and do nothing else.
-   */
-  _showNextLinear() {
-    if (this.currentIndex === this.count - 1) {
-      this._stop();
-      return;
-    }
-
-    this._animateNext(
-      this.element.querySelectorAll("." + cssClasses.crslClass + " > ul li")[
-        this.currentIndex
-      ]
-    );
-
-    this._adjustCurrentIndexTo(1);
-  }
-
-  /**
-   * Helper function to show the next slide for INFINITE carousel.
-   * Do the sliding, move the second item to the very end.
-   */
-  _showNextInfinite() {
-    this._animateNext(
-      this.element.querySelectorAll("." + cssClasses.crslClass + " > ul li")[1]
-    );
-
-    console.log(
-      this.element.querySelectorAll("." + cssClasses.crslClass + " > ul li")[1]
-    );
-    this._moveItem(0, "", "beforeend"); // i = 0, marginLeft = "", position = before the end
-
-    this._adjustCurrentIndexTo(1);
-  }
-
-  /**
    * Helper function to show the previous slide for LINEAR carousel.
    * Stop the autoplay if user goes back. If on the first slide - do nothing.
    */
@@ -284,6 +302,11 @@ class Carousel {
       return;
     }
     this._animatePrev(
+      this.element.querySelectorAll("." + cssClasses.crslClass + " > ul li")[
+        this.currentIndex - 1
+      ]
+    );
+    console.log(
       this.element.querySelectorAll("." + cssClasses.crslClass + " > ul li")[
         this.currentIndex - 1
       ]
@@ -300,11 +323,7 @@ class Carousel {
     this._animatePrev(
       this.element.querySelectorAll("." + cssClasses.crslClass + " > ul li")[0]
     );
-    this._moveItem(
-      this.count - 1,
-      `-${this.element.offsetWidth}px`,
-      "afterBegin"
-    );
+    this._moveItem(this.count - 1, `-${this.imgWidth}px`, "afterBegin");
 
     this._adjustCurrentIndexTo(-1);
   }
@@ -319,12 +338,16 @@ class Carousel {
 
     // current index is x (starts from 0) than x=0+1 ,, x=1+1,, x=2+1
     switch (this.currentIndex) {
+      // if current index is -1 mutate to 9
       case -1:
         this.currentIndex = this.count - 1;
         break;
+
+      // if current index is 10 mutate to 0
       case this.count:
         this.currentIndex = 0;
         break;
+
       default:
         this.currentIndex = this.currentIndex;
     }
@@ -340,9 +363,8 @@ class Carousel {
    * @param {object} item - The element to move into view.
    */
   _animateNext(item) {
-    let imgWidth =
-      this.element.getElementsByTagName("img")[this.currentIndex].offsetWidth;
-    item.style.marginLeft = `-${imgWidth}px`;
+    // console.log(this.count / 2);
+    item.style.marginLeft = `-${this.imgWidth}px`;
   }
 
   /**
